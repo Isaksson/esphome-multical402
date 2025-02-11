@@ -32,6 +32,7 @@ class Multical402 : public Component, public uart::UARTDevice {
   std::vector<byte> receive();
   float decode(unsigned short kreg, const byte* msg);
   int crc_1021(const std::vector<byte>& inmsg);
+  void wake_device();
 
   uart::UARTComponent *uart_;
   std::vector<KamstrupRegister> registers_;
