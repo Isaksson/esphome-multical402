@@ -88,6 +88,27 @@ void Multical402::send(const byte* msg, int msgsize) {
   this->uart_->write_array(txmsg.data(), txmsg.size());
 }
 
+void Multical402::wake_device() {
+  ESP_LOGD(TAG, "Waking up device...");
+
+  // Send 0xFF repeatedly for more than 4.5 seconds
+  unsigned long start_time = millis();
+  while (millis() - start_time < 4500) {
+    this->uart_->write_byte(0xFF);
+    delay(9);  // Delay less than the transmission time of one character at 1200 baud
+  }
+
+  // Wait at least half a second
+  delay(500);
+
+  // Send the GetType command
+  byte get_type_msg[] = {0x80, 0x3F, 0x01, 0x05, 0x8A, 0x0D};
+
+  ESP_LOGD(TAG, "Sending GetType command...");
+  this->uart_->write_array(get_type_msg, sizeof(get_type_msg));
+  ESP_LOGD(TAG, "GetType command sent");
+}
+
 std::vector<byte> Multical402::receive() {
   std::vector<byte> rxdata;
   unsigned long starttime = millis();
@@ -98,6 +119,7 @@ std::vector<byte> Multical402::receive() {
   while (r != 0x0d) {
     if (millis() - starttime > 300) {
       ESP_LOGW(TAG, "Timed out listening for data");
+      wake_device();
       return {};
     }
 
