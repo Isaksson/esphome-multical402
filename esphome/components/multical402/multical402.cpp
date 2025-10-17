@@ -27,7 +27,7 @@ void Multical402::setup() {
 
 void Multical402::loop() {
   unsigned long current_time = millis();
-  if (current_time - last_update_ >= 5000) {  // 5 seconds
+  if (current_time - last_update_ >= 600000) {  // 10 minutes
     ESP_LOGD(TAG, "Updating Multical402 registers...");
     update_registers();
     last_update_ = current_time;
