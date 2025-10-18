@@ -117,7 +117,7 @@ std::vector<byte> Multical402::receive() {
 
   byte r = 0;
   while (r != 0x0d) {
-    if (millis() - starttime > 300) {
+    if (millis() - starttime > 1000) {
       ESP_LOGW(TAG, "Timed out listening for data");
       wake_device();
       return {};
