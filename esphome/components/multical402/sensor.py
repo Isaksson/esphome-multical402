@@ -13,21 +13,20 @@ DEPENDENCIES = ['uart']
 multical402_ns = cg.esphome_ns.namespace('multical402')
 Multical402 = multical402_ns.class_('Multical402', cg.Component, sensor.Sensor, uart.UARTDevice)
 
+MULTICAL402_SENSOR_SCHEMA = sensor.sensor_schema(
+).extend(
+    {
+        cv.Required(CONF_ADDRESS): cv.hex_int,
+        # cv.Required(CONF_NAME): cv.string,
+        # cv.Required(CONF_UNIT_OF_MEASUREMENT): cv.string,
+    }
+)
 CONFIG_SCHEMA = uart.UART_DEVICE_SCHEMA.extend(
     {
         cv.GenerateID(): cv.declare_id(Multical402),
-        cv.Required(CONF_SENSORS): cv.ensure_list(
-            sensor.SENSOR_SCHEMA.extend(
-                {
-                    cv.Required(CONF_ADDRESS): cv.hex_int,
-                    cv.Required(CONF_NAME): cv.string,
-                    cv.Required(CONF_UNIT_OF_MEASUREMENT): cv.string,
-                }
-            )
-        ),
+        cv.Required(CONF_SENSORS): cv.ensure_list(MULTICAL402_SENSOR_SCHEMA),
     }
 )
-
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
