@@ -23,6 +23,7 @@ void Multical402::setup() {
     return;
   }
   this->uart_->set_baud_rate(1200);
+  last_update_ = millis() - 540000;
 }
 
 void Multical402::loop() {
